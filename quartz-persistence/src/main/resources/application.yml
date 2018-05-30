@@ -1,0 +1,15 @@
+server:
+  port: 16885
+  servlet:
+    context-path: /msg
+
+spring:
+  datasource:
+    #write your database's username
+    username: root
+    #write your database's password
+    password: blackfish
+    #write your database's url
+    url: jdbc:mysql://127.0.0.1/test_quartz?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+

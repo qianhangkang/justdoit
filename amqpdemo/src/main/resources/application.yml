@@ -1,0 +1,5 @@
+spring:
+  mail:
+    host: smtp.163.com
+    username: qianhangkang@163.com
+    password: FUsyWtzNNaGvHa4Y

@@ -1,0 +1,11 @@
+###
+GET localhost:8080/sendSimple/445641438@qq.com
+
+###
+GET localhost:8080/sendPic/445641438@qq.com
+
+
+###
+GET localhost:8080/sendHtml/445641438@qq.com
+
+###
