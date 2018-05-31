@@ -1,17 +1,22 @@
 package com.hongkong.demo.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Random;
 
 /**
  * @author HANGKANG
- * @date 2018/5/29 下午10:00
+ * @date 2018/5/30 下午7:09
  */
 
 @Slf4j
 public class MyJob implements Job {
+
     private static Random random = new Random();
 
     /**
