@@ -1,8 +1,9 @@
 package com.hongkong.demo.service;
 
 import com.hongkong.demo.enumeration.TaskStatusEnum;
-import com.hongkong.demo.model.PtpMsmTask;
-import com.hongkong.demo.repository.PtpMsmTaskRepository;
+import com.hongkong.demo.data.model.PtpMsmTask;
+import com.hongkong.demo.data.repository.PtpMsmTaskRepository;
+import com.hongkong.demo.enumeration.TaskTypeEnum;
 import com.hongkong.demo.task.MyJob;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -40,9 +41,7 @@ public class QuartzService {
             return;
         }
         //将数据库中未执行的任务重新加入至schedule中
-
         String name = null;
-        String group = null;
         Date startDate = null;
         JobDetail jobDetail = null;
         Trigger trigger = null;
@@ -50,10 +49,9 @@ public class QuartzService {
             JobDataMap dataMap = new JobDataMap();
             dataMap.put("parameter", job.getParameter());
             name = job.getJobName();
-            group = job.getJobGroup();
             startDate = job.getExecuteDate();
-            jobDetail = JobBuilder.newJob(MyJob.class).withIdentity("job---"+name,group).setJobData(dataMap).build();
-            trigger = TriggerBuilder.newTrigger().withIdentity("trigger---"+name,group).startAt(startDate).build();
+            jobDetail = JobBuilder.newJob(MyJob.class).withIdentity(name,name).setJobData(dataMap).build();
+            trigger = TriggerBuilder.newTrigger().withIdentity(name,name).startAt(startDate).build();
             try {
                 scheduler.scheduleJob(jobDetail,trigger);
                 log.info("job---{}加入至schedule",name);
@@ -76,20 +74,26 @@ public class QuartzService {
         JobDataMap dataMap = new JobDataMap();
         dataMap.put("parameter", parameter);
         //jobDetail
-        JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity("job---"+id,id).withDescription("startAt").setJobData(dataMap).build();
+        JobDetail jobDetail = JobBuilder.newJob(MyJob.class)
+                .withIdentity(id,id)
+                .setJobData(dataMap)
+                .build();
         //trigger
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger---"+id,id).startAt(startDate).build();
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity(id,id)
+                .startAt(startDate)
+                .build();
         //写入数据库
         PtpMsmTask job = PtpMsmTask.builder()
                 .jobName(id)
-                .jobGroup(id)
                 .parameter(parameter)
                 .executeDate(startDate)
                 .status(TaskStatusEnum.NOT_PERFORME.getType())
+                .type(TaskTypeEnum.LATER.getType())
                 .build();
         long count = repository.insert(job);
         if (count == 0) {
-            log.info("任务{}写入数据库失败", job);
+            log.info("任务{}写入数据库失败，任务不执行", job);
             return;
         }
         try {
@@ -111,9 +115,22 @@ public class QuartzService {
         JobDataMap dataMap = new JobDataMap();
         dataMap.put("parameter", parameter);
         //jobDetail
-        JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity("job---"+id,id).setJobData(dataMap).build();
+        JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity(id,id).setJobData(dataMap).build();
         //trigger
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger---"+id,id).startNow().build();
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(id,id).startNow().build();
+        //写入数据库
+        PtpMsmTask job = PtpMsmTask.builder()
+                .jobName(id)
+                .parameter(parameter)
+                .executeDate(new Date())
+                .status(TaskStatusEnum.NOT_PERFORME.getType())
+                .type(TaskTypeEnum.NOW.getType())
+                .build();
+        long count = repository.insert(job);
+        if (count == 0) {
+            log.info("任务{}写入数据库失败，任务不执行", job);
+            return;
+        }
         try {
             scheduler.scheduleJob(jobDetail,trigger);
             log.info("job---{}加入至schedule",id);

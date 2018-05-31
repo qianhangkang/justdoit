@@ -1,8 +1,8 @@
 package com.hongkong.demo.listener;
 
 import com.hongkong.demo.enumeration.TaskStatusEnum;
-import com.hongkong.demo.model.PtpMsmTask;
-import com.hongkong.demo.repository.PtpMsmTaskRepository;
+import com.hongkong.demo.data.model.PtpMsmTask;
+import com.hongkong.demo.data.repository.PtpMsmTaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -42,24 +42,37 @@ public class QuartzListener implements JobListener {
 
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-        //监听job执行完成后
-        log.info("监听器收到job执行结果:{}", context.getResult());//打印job执行结果
-        String description = context.getJobDetail().getDescription();
-        log.info("des:{}",description);
-        if ("startAt".equals(description)) {
-            //延时执行的任务，而不是立即执行的任务
-            String name = context.getJobDetail().getKey().getName();
-            PtpMsmTask job = repository.findOneByName(name);
-            if (Objects.isNull(job)) {
-                log.debug("任务name为{}无法在数据库中找到", name);
-                return;
-            }
+        /*
+         * 得到任务的name
+         * 根据name查找数据库
+         * 若不存在记录，记录异常
+         * 否则，判断传入的异常是否为空，更新对应的任务状态
+         */
+        String name = context.getJobDetail().getKey().getName();
+        PtpMsmTask job = repository.findOneByName(name);
+        if (Objects.isNull(job)) {
+            log.debug("数据库中无法查询到name为{}的任务",name);
+            return;
+        }
+        //存在记录，判断是否执行时抛出异常
+        if (Objects.isNull(jobException)) {
+            //执行成功，没有异常
             job.setStatus(TaskStatusEnum.SUCCESS.getType());
-            int count = repository.update(job);
+            int count = repository.updateByName(job,name);
             if (count == 0) {
                 log.debug("更新job{}失败", job);
                 return;
             }
+            log.info("任务为{}，描述为{}的任务执行完成",name, context.getJobDetail().getDescription());
+            return;
         }
+        //执行时发生异常
+        job.setStatus(TaskStatusEnum.FAIL.getType());
+        int count = repository.updateByName(job,name);
+        if (count == 0) {
+            log.debug("更新job{}失败", job);
+            return;
+        }
+        log.info("任务为{}，描述为{}的任务执行发生异常{}",name, context.getJobDetail().getDescription(),jobException.getMessage());
     }
 }

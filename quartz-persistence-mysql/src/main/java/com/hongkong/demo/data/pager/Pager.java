@@ -1,10 +1,10 @@
-package com.hongkong.demo.pager;
+package com.hongkong.demo.data.pager;
 
 /**
  * 分页信息.
  *
  * @author qianhangkang
- * @since 2018/05/30 16:16
+ * @since 2018/05/31 14:47
  */
 public class Pager {
 

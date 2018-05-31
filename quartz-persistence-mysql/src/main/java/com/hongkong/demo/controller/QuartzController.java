@@ -1,6 +1,5 @@
 package com.hongkong.demo.controller;
 
-import com.hongkong.demo.listener.QuartzListener;
 import com.hongkong.demo.service.QuartzService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
@@ -77,4 +76,18 @@ public class QuartzController {
         return res;
     }
 
+    /**
+     * 添加自定义数量的job
+     * @param count job的数量
+     */
+    @RequestMapping(value = "test/{count}")
+    public void test(@PathVariable(value = "count") int count) {
+        Calendar calendar = Calendar.getInstance();
+
+        for (int i = 0; i < count; i++) {
+            calendar.setTime(new Date());
+            calendar.add(Calendar.SECOND, 10);
+            service.addJob(Integer.toString(i),calendar.getTime());
+        }
+    }
 }

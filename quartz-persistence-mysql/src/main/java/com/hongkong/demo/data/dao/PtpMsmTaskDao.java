@@ -1,8 +1,8 @@
-package com.hongkong.demo.dao;
+package com.hongkong.demo.data.dao;
 
-import com.hongkong.demo.model.PtpMsmTask;
-import com.hongkong.demo.query.PtpMsmTaskQuery;
-import com.hongkong.demo.pager.Pager;
+import com.hongkong.demo.data.model.PtpMsmTask;
+import com.hongkong.demo.data.query.PtpMsmTaskQuery;
+import com.hongkong.demo.data.pager.Pager;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * the PtpMsmTask dao interface.
  *
  * @author qianhangkang
- * @since 2018/05/30 16:16
+ * @since 2018/05/31 14:47
  */
 public interface PtpMsmTaskDao {
 
@@ -34,14 +34,6 @@ public interface PtpMsmTaskDao {
      * @return 更新成功记录数
      */
     public int updateBySelective(@Param("entity") PtpMsmTask entity, @Param("criteria") PtpMsmTaskQuery whereEntity);
-
-    /**
-     * 更新记录
-     * @param entity 待更新的业务信息
-     * @return
-     */
-    public int update(@Param("entity") PtpMsmTask entity);
-
 
     /**
      * 根据Id进行查询.
@@ -99,5 +91,13 @@ public interface PtpMsmTaskDao {
      * @return 业务实体对象
      */
     public long insert(PtpMsmTask entity);
+
+//    /**
+//     * 更新记录.
+//     *
+//     * @param entity 待更新的业务实体
+//     * @return 更新数
+//     */
+//    public int update(@Param("entity") PtpMsmTask entity);
 
 }

@@ -1,8 +1,8 @@
-package com.hongkong.demo.repository;
+package com.hongkong.demo.data.repository;
 
-import com.hongkong.demo.dao.PtpMsmTaskDao;
-import com.hongkong.demo.model.PtpMsmTask;
-import com.hongkong.demo.query.PtpMsmTaskQuery;
+import com.hongkong.demo.data.dao.PtpMsmTaskDao;
+import com.hongkong.demo.data.model.PtpMsmTask;
+import com.hongkong.demo.data.query.PtpMsmTaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * the PtpMsmTask repository.
  *
  * @author qianhangkang
- * @since 2018/05/30 16:16
+ * @since 2018/05/31 14:47
  */
 @Repository
 public class PtpMsmTaskRepository {
@@ -60,6 +60,7 @@ public class PtpMsmTaskRepository {
         return ptpMsmTaskDao.insert(entity);
     }
 
+
     /**
      * 根据任务状态查找任务列表
      * @param status 任务状态
@@ -77,8 +78,11 @@ public class PtpMsmTaskRepository {
      * @param job 更新对象
      * @return 更新记录数
      */
-    public int update(PtpMsmTask job) {
-        return ptpMsmTaskDao.update(job);
+    public int updateByName(PtpMsmTask job,String name) {
+        PtpMsmTaskQuery query = PtpMsmTaskQuery.builder()
+                .jobName(name)
+                .build();
+        return ptpMsmTaskDao.updateBySelective(job, query);
     }
 
     /**
@@ -92,4 +96,5 @@ public class PtpMsmTaskRepository {
                 .build();
         return ptpMsmTaskDao.findOne(query);
     }
+
 }

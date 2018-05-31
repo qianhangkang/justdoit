@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.hongkong.demo")
+@MapperScan(basePackages = "com.hongkong.demo.data")
 public class DemoApplication {
 
     public static void main(String[] args) {

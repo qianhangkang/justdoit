@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Random;
 
@@ -22,23 +20,24 @@ public class MyJob implements Job {
     /**
      * Job执行的方法
      * @param context job上下文
-     * @throws JobExecutionException
      */
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) {
         //得到传入job的参数
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         String parameter = dataMap.getString("parameter");
         //quartz自动生成的唯一id
         String instanceId = context.getFireInstanceId();
-        log.info("任务{}，参数为{}开始执行任务",instanceId,parameter);
-        int time = random.nextInt(5000)+1000;
+        log.info("任务{}，参数为{}开始执行任务", instanceId, parameter);
+
         try {
+            int time = random.nextInt(5000) + 1000;
             Thread.sleep(time);
+            log.info("任务{}，参数为{}，时间为{}执行结束", instanceId, parameter, time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.info("任务{}，参数为{}，时间为{}执行结束",instanceId,parameter,time);
+
         context.setResult(String.format("%s say 'hello' to listener",instanceId));
     }
 }

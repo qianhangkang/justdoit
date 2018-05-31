@@ -2,195 +2,209 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hongkong.demo.dao.PtpMsmTaskDao">
+<mapper namespace="com.hongkong.demo.data.dao.PtpMsmTaskDao">
 
-  <resultMap id="PtpMsmTaskMap" type="com.hongkong.demo.model.PtpMsmTask">
-      <result column="ID" property="id"/>
-      <result column="PARAMETER" property="parameter"/>
-      <result column="EXECUTE_DATE" property="executeDate"/>
-      <result column="STATUS" property="status"/>
-      <result column="JOB_NAME" property="jobName"/>
-      <result column="JOB_GROUP" property="jobGroup"/>
-  </resultMap>
+    <resultMap id="PtpMsmTaskMap" type="com.hongkong.demo.data.model.PtpMsmTask">
+        <result column="ID" property="id"/>
+        <result column="JOB_NAME" property="jobName"/>
+        <result column="PARAMETER" property="parameter"/>
+        <result column="EXECUTE_DATE" property="executeDate"/>
+        <result column="STATUS" property="status"/>
+        <result column="CRON" property="cron"/>
+        <result column="TYPE" property="type"/>
+    </resultMap>
 
-  <sql id="fields">
-      ID, PARAMETER, EXECUTE_DATE, STATUS, JOB_NAME, JOB_GROUP
+    <sql id="fields">
+      ID, JOB_NAME, PARAMETER, EXECUTE_DATE, STATUS, CRON, TYPE
   </sql>
 
-  <select id="count" parameterType="com.hongkong.demo.model.PtpMsmTask"
-          resultType="java.lang.Long">
-      SELECT count(1) FROM PTP_MSM_TASK
-      <where>
-          <if test="id != null">AND ID = #{id}</if>
-          <if test="parameter != null">AND PARAMETER = #{parameter}</if>
-          <if test="executeDate != null">AND EXECUTE_DATE = #{executeDate}</if>
-          <if test="status != null">AND STATUS = #{status}</if>
-          <if test="jobName != null">AND JOB_NAME = #{jobName}</if>
-          <if test="jobGroup != null">AND JOB_GROUP = #{jobGroup}</if>
-      </where>
-      limit 1
-  </select>
+    <select id="count" parameterType="com.hongkong.demo.data.model.PtpMsmTask"
+            resultType="java.lang.Long">
+        SELECT count(1) FROM PTP_MSM_TASK
+        <where>
+            <if test="id != null">AND ID = #{id}</if>
+            <if test="jobName != null">AND JOB_NAME = #{jobName}</if>
+            <if test="parameter != null">AND PARAMETER = #{parameter}</if>
+            <if test="executeDate != null">AND EXECUTE_DATE = #{executeDate}</if>
+            <if test="status != null">AND STATUS = #{status}</if>
+            <if test="cron != null">AND CRON = #{cron}</if>
+            <if test="type != null">AND TYPE = #{type}</if>
+        </where>
+        limit 1
+    </select>
 
-  <insert id="insert" keyProperty="id" useGeneratedKeys="true"
-          parameterType="com.hongkong.demo.model.PtpMsmTask">
-      INSERT INTO
-      PTP_MSM_TASK
-      <trim prefix="(" suffix=")" suffixOverrides=",">
-          <if test="id != null">ID,</if>
-          <if test="parameter != null">PARAMETER,</if>
-          <if test="executeDate != null">EXECUTE_DATE,</if>
-          <if test="status != null">STATUS,</if>
-          <if test="jobName != null">JOB_NAME,</if>
-          <if test="jobGroup != null">JOB_GROUP,</if>
-      </trim>
-      VALUES
-      <trim prefix="(" suffix=")" suffixOverrides=",">
-          <if test="id != null">#{id},</if>
-          <if test="parameter != null">#{parameter},</if>
-          <if test="executeDate != null">#{executeDate},</if>
-          <if test="status != null">#{status},</if>
-          <if test="jobName != null">#{jobName},</if>
-          <if test="jobGroup != null">#{jobGroup},</if>
-      </trim>
-  </insert>
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.hongkong.demo.data.model.PtpMsmTask">
+        INSERT INTO
+        PTP_MSM_TASK
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">ID,</if>
+            <if test="jobName != null">JOB_NAME,</if>
+            <if test="parameter != null">PARAMETER,</if>
+            <if test="executeDate != null">EXECUTE_DATE,</if>
+            <if test="status != null">STATUS,</if>
+            <if test="cron != null">CRON,</if>
+            <if test="type != null">TYPE,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="jobName != null">#{jobName},</if>
+            <if test="parameter != null">#{parameter},</if>
+            <if test="executeDate != null">#{executeDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="cron != null">#{cron},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
 
-  <select id="findList" parameterType="com.hongkong.demo.model.PtpMsmTask"
-          resultMap="PtpMsmTaskMap">
-      SELECT
-      <include refid="fields"/>
-      FROM PTP_MSM_TASK
-      <where>
-          <if test="id != null">AND ID = #{id}</if>
-          <if test="parameter != null">AND PARAMETER = #{parameter}</if>
-          <if test="executeDate != null">AND EXECUTE_DATE = #{executeDate}</if>
-          <if test="status != null">AND STATUS = #{status}</if>
-          <if test="jobName != null">AND JOB_NAME = #{jobName}</if>
-          <if test="jobGroup != null">AND JOB_GROUP = #{jobGroup}</if>
-      </where>
-      limit 5000
-  </select>
+    <select id="findList" parameterType="com.hongkong.demo.data.model.PtpMsmTask"
+            resultMap="PtpMsmTaskMap">
+        SELECT
+        <include refid="fields"/>
+        FROM PTP_MSM_TASK
+        <where>
+            <if test="id != null">AND ID = #{id}</if>
+            <if test="jobName != null">AND JOB_NAME = #{jobName}</if>
+            <if test="parameter != null">AND PARAMETER = #{parameter}</if>
+            <if test="executeDate != null">AND EXECUTE_DATE = #{executeDate}</if>
+            <if test="status != null">AND STATUS = #{status}</if>
+            <if test="cron != null">AND CRON = #{cron}</if>
+            <if test="type != null">AND TYPE = #{type}</if>
+        </where>
+        limit 5000
+    </select>
 
-  <select id="findOne" parameterType="com.hongkong.demo.model.PtpMsmTask"
-          resultMap="PtpMsmTaskMap">
-      SELECT
-      <include refid="fields"/>
-      FROM PTP_MSM_TASK
-      <where>
-          <if test="id != null">AND ID = #{id}</if>
-          <if test="parameter != null">AND PARAMETER = #{parameter}</if>
-          <if test="executeDate != null">AND EXECUTE_DATE = #{executeDate}</if>
-          <if test="status != null">AND STATUS = #{status}</if>
-          <if test="jobName != null">AND JOB_NAME = #{jobName}</if>
-          <if test="jobGroup != null">AND JOB_GROUP = #{jobGroup}</if>
-      </where>
-      limit 1
-  </select>
+    <select id="findOne" parameterType="com.hongkong.demo.data.model.PtpMsmTask"
+            resultMap="PtpMsmTaskMap">
+        SELECT
+        <include refid="fields"/>
+        FROM PTP_MSM_TASK
+        <where>
+            <if test="id != null">AND ID = #{id}</if>
+            <if test="jobName != null">AND JOB_NAME = #{jobName}</if>
+            <if test="parameter != null">AND PARAMETER = #{parameter}</if>
+            <if test="executeDate != null">AND EXECUTE_DATE = #{executeDate}</if>
+            <if test="status != null">AND STATUS = #{status}</if>
+            <if test="cron != null">AND CRON = #{cron}</if>
+            <if test="type != null">AND TYPE = #{type}</if>
+        </where>
+        limit 1
+    </select>
 
-  <select id="findPage" parameterType="com.hongkong.demo.model.PtpMsmTask"
-          resultMap="PtpMsmTaskMap">
-      SELECT
-      <include refid="fields"/>
-      FROM PTP_MSM_TASK
-      <where>
-          <if test="query.id != null">AND ID = #{query.id}</if>
-          <if test="query.parameter != null">AND PARAMETER = #{query.parameter}</if>
-          <if test="query.executeDate != null">AND EXECUTE_DATE = #{query.executeDate}</if>
-          <if test="query.status != null">AND STATUS = #{query.status}</if>
-          <if test="query.jobName != null">AND JOB_NAME = #{query.jobName}</if>
-          <if test="query.jobGroup != null">AND JOB_GROUP = #{query.jobGroup}</if>
-      </where>
-      limit #{pager.start},#{pager.size}
-  </select>
+    <select id="findPage" parameterType="com.hongkong.demo.data.model.PtpMsmTask"
+            resultMap="PtpMsmTaskMap">
+        SELECT
+        <include refid="fields"/>
+        FROM PTP_MSM_TASK
+        <where>
+            <if test="query.id != null">AND ID = #{query.id}</if>
+            <if test="query.jobName != null">AND JOB_NAME = #{query.jobName}</if>
+            <if test="query.parameter != null">AND PARAMETER = #{query.parameter}</if>
+            <if test="query.executeDate != null">AND EXECUTE_DATE = #{query.executeDate}</if>
+            <if test="query.status != null">AND STATUS = #{query.status}</if>
+            <if test="query.cron != null">AND CRON = #{query.cron}</if>
+            <if test="query.type != null">AND TYPE = #{query.type}</if>
+        </where>
+        limit #{pager.start},#{pager.size}
+    </select>
 
-  <select id="batchFindById" parameterType="com.hongkong.demo.model.PtpMsmTask"
-          resultMap="PtpMsmTaskMap">
-      SELECT
-      <include refid="fields"/>
-      FROM PTP_MSM_TASK WHERE
-      id IN
-      <foreach collection="list" item="id" open="(" close=")" separator=",">
-      #{id}
-      </foreach>
-      limit 5000
-  </select>
+    <select id="batchFindById" parameterType="com.hongkong.demo.data.model.PtpMsmTask"
+            resultMap="PtpMsmTaskMap">
+        SELECT
+        <include refid="fields"/>
+        FROM PTP_MSM_TASK WHERE
+        id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        limit 5000
+    </select>
 
-  <select id="findListWithIn" parameterType="com.hongkong.demo.model.PtpMsmTask"
-          resultMap="PtpMsmTaskMap">
-      SELECT
-      <include refid="fields"/>
-      FROM PTP_MSM_TASK
-      <where>
-          <if test="query.id != null">AND ID = #{query.id}</if>
-          <if test="query.parameter != null">AND PARAMETER = #{query.parameter}</if>
-          <if test="query.executeDate != null">AND EXECUTE_DATE = #{query.executeDate}</if>
-          <if test="query.status != null">AND STATUS = #{query.status}</if>
-          <if test="query.jobName != null">AND JOB_NAME = #{query.jobName}</if>
-          <if test="query.jobGroup != null">AND JOB_GROUP = #{query.jobGroup}</if>
-          <if test="inValues != null">
-              AND ${inFiled} in
-              <foreach collection="inValues" item="value" open="(" close=")" separator=",">
-              #{value}
-              </foreach>
-          </if>
-      </where>
-      limit 5000
-  </select>
+    <select id="findListWithIn" parameterType="com.hongkong.demo.data.model.PtpMsmTask"
+            resultMap="PtpMsmTaskMap">
+        SELECT
+        <include refid="fields"/>
+        FROM PTP_MSM_TASK
+        <where>
+            <if test="query.id != null">AND ID = #{query.id}</if>
+            <if test="query.jobName != null">AND JOB_NAME = #{query.jobName}</if>
+            <if test="query.parameter != null">AND PARAMETER = #{query.parameter}</if>
+            <if test="query.executeDate != null">AND EXECUTE_DATE = #{query.executeDate}</if>
+            <if test="query.status != null">AND STATUS = #{query.status}</if>
+            <if test="query.cron != null">AND CRON = #{query.cron}</if>
+            <if test="query.type != null">AND TYPE = #{query.type}</if>
+            <if test="inValues != null">
+                AND ${inFiled} in
+                <foreach collection="inValues" item="value" open="(" close=")" separator=",">
+                    #{value}
+                </foreach>
+            </if>
+        </where>
+        limit 5000
+    </select>
 
-  <insert id="batchInsert" useGeneratedKeys="true" parameterType="com.hongkong.demo.model.PtpMsmTask">
-      INSERT INTO PTP_MSM_TASK
-      <trim prefix="(" suffix=")" suffixOverrides=",">
-          ID,
-          PARAMETER,
-          EXECUTE_DATE,
-          STATUS,
-          JOB_NAME,
-          JOB_GROUP,
-      </trim>
-      VALUES
-      <foreach collection="list" item="item" index="index" separator=",">
-      <trim prefix="(" suffix=")" suffixOverrides=",">
-          #{item.id},
-          #{item.parameter},
-          #{item.executeDate},
-          #{item.status},
-          #{item.jobName},
-          #{item.jobGroup},
-      </trim>
-      </foreach>
-  </insert>
+    <insert id="batchInsert" useGeneratedKeys="true" parameterType="com.hongkong.demo.data.model.PtpMsmTask">
+        INSERT INTO PTP_MSM_TASK
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            JOB_NAME,
+            PARAMETER,
+            EXECUTE_DATE,
+            STATUS,
+            CRON,
+            TYPE,
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.id},
+                #{item.jobName},
+                #{item.parameter},
+                #{item.executeDate},
+                #{item.status},
+                #{item.cron},
+                #{item.type},
+            </trim>
+        </foreach>
+    </insert>
 
-  <update id="updateBySelective" parameterType="com.hongkong.demo.model.PtpMsmTask">
-      UPDATE PTP_MSM_TASK
-      <set>
-          <if test="entity.id != null">ID = #{entity.id},</if>
-          <if test="entity.parameter != null">PARAMETER = #{entity.parameter},</if>
-          <if test="entity.executeDate != null">EXECUTE_DATE = #{entity.executeDate},</if>
-          <if test="entity.status != null">STATUS = #{entity.status},</if>
-          <if test="entity.jobName != null">JOB_NAME = #{entity.jobName},</if>
-          <if test="entity.jobGroup != null">JOB_GROUP = #{entity.jobGroup},</if>
-      </set>
-      <where>
-          <if test="criteria.id != null">AND ID = #{criteria.id}</if>
-          <if test="criteria.parameter != null">AND PARAMETER = #{criteria.parameter}</if>
-          <if test="criteria.executeDate != null">AND EXECUTE_DATE = #{criteria.executeDate}</if>
-          <if test="criteria.status != null">AND STATUS = #{criteria.status}</if>
-          <if test="criteria.jobName != null">AND JOB_NAME = #{criteria.jobName}</if>
-          <if test="criteria.jobGroup != null">AND JOB_GROUP = #{criteria.jobGroup}</if>
-      </where>
-      limit 100
-  </update>
-
-    <update id="update" parameterType="com.hongkong.demo.model.PtpMsmTask">
+    <update id="updateBySelective" parameterType="com.hongkong.demo.data.model.PtpMsmTask">
         UPDATE PTP_MSM_TASK
         <set>
             <if test="entity.id != null">ID = #{entity.id},</if>
+            <if test="entity.jobName != null">JOB_NAME = #{entity.jobName},</if>
             <if test="entity.parameter != null">PARAMETER = #{entity.parameter},</if>
             <if test="entity.executeDate != null">EXECUTE_DATE = #{entity.executeDate},</if>
             <if test="entity.status != null">STATUS = #{entity.status},</if>
-            <if test="entity.jobName != null">JOB_NAME = #{entity.jobName},</if>
-            <if test="entity.jobGroup != null">JOB_GROUP = #{entity.jobGroup},</if>
+            <if test="entity.cron != null">CRON = #{entity.cron},</if>
+            <if test="entity.type != null">TYPE = #{entity.type},</if>
         </set>
+        <where>
+            <if test="criteria.id != null">AND ID = #{criteria.id}</if>
+            <if test="criteria.jobName != null">AND JOB_NAME = #{criteria.jobName}</if>
+            <if test="criteria.parameter != null">AND PARAMETER = #{criteria.parameter}</if>
+            <if test="criteria.executeDate != null">AND EXECUTE_DATE = #{criteria.executeDate}</if>
+            <if test="criteria.status != null">AND STATUS = #{criteria.status}</if>
+            <if test="criteria.cron != null">AND CRON = #{criteria.cron}</if>
+            <if test="criteria.type != null">AND TYPE = #{criteria.type}</if>
+        </where>
         limit 100
     </update>
+
+
+    <!--<update id="update" parameterType="com.hongkong.demo.data.model.PtpMsmTask">-->
+        <!--UPDATE PTP_MSM_TASK-->
+        <!--<set>-->
+            <!--<if test="entity.id != null">ID = #{entity.id},</if>-->
+            <!--<if test="entity.jobName != null">JOB_NAME = #{entity.jobName},</if>-->
+            <!--<if test="entity.parameter != null">PARAMETER = #{entity.parameter},</if>-->
+            <!--<if test="entity.executeDate != null">EXECUTE_DATE = #{entity.executeDate},</if>-->
+            <!--<if test="entity.status != null">STATUS = #{entity.status},</if>-->
+            <!--<if test="entity.cron != null">CRON = #{entity.cron},</if>-->
+            <!--<if test="entity.type != null">TYPE = #{entity.type},</if>-->
+        <!--</set>-->
+        <!--limit 100-->
+    <!--</update>-->
 
 </mapper>
