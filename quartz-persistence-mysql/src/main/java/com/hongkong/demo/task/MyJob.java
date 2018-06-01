@@ -37,7 +37,5 @@ public class MyJob implements Job {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        context.setResult(String.format("%s say 'hello' to listener",instanceId));
     }
 }
