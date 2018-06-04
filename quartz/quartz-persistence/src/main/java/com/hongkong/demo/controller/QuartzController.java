@@ -42,12 +42,12 @@ public class QuartzController {
      */
     @RequestMapping(value = "/add/{parameter}")
     public String add(@PathVariable(value = "parameter") String parameter) {
-        //设置60s后执行
         Date now = new Date();
         log.info("现在时间为{}",now);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
-        calendar.add(Calendar.SECOND, 60);
+        calendar.add(Calendar.HOUR, 1);
+
         //执行时间
         Date startDate = calendar.getTime();
         log.info("任务执行的时间为{}", startDate);
@@ -78,6 +78,17 @@ public class QuartzController {
             e.printStackTrace();
         }
         return res;
+    }
+
+    @RequestMapping(value = "/test/{count}")
+    public String test(@PathVariable(value = "count") int count) {
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < count; i++) {
+            calendar.setTime(new Date());
+            calendar.add(Calendar.HOUR, 1);
+            service.addJob(Integer.toString(i),calendar.getTime());
+        }
+        return "ok";
     }
 
 }

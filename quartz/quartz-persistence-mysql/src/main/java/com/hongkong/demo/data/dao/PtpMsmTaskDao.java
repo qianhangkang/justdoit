@@ -92,12 +92,4 @@ public interface PtpMsmTaskDao {
      */
     public long insert(PtpMsmTask entity);
 
-//    /**
-//     * 更新记录.
-//     *
-//     * @param entity 待更新的业务实体
-//     * @return 更新数
-//     */
-//    public int update(@Param("entity") PtpMsmTask entity);
-
 }
