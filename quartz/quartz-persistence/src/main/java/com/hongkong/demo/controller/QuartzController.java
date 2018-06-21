@@ -80,12 +80,18 @@ public class QuartzController {
         return res;
     }
 
+    /**
+     * 添加count个任务30s后执行
+     *
+     * @param count 任务数量
+     * @return "ok"
+     */
     @RequestMapping(value = "/test/{count}")
     public String test(@PathVariable(value = "count") int count) {
         Calendar calendar = Calendar.getInstance();
         for (int i = 0; i < count; i++) {
             calendar.setTime(new Date());
-            calendar.add(Calendar.HOUR, 1);
+            calendar.add(Calendar.SECOND, 30);
             service.addJob(Integer.toString(i),calendar.getTime());
         }
         return "ok";

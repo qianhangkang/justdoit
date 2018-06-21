@@ -17,6 +17,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * quartz 服务类
+ *
  * @author HANGKANG
  * @date 2018/5/30 下午6:38
  */
@@ -35,16 +37,17 @@ public class QuartzService {
      *
      * 先读取数据库中执行状态为"未执行"（0）的任务
      * 接着根据任务类型为对应的任务构建相应的trigger并放入schedule中
+     *
      */
     @PostConstruct
     public void init() {
         List<PtpMsmTask> list = repository.findListByStatus(TaskStatusEnum.NOT_PERFORME.getType());
         if (Objects.isNull(list) || list.isEmpty()) {
-            log.info("{}时间点之前不存在未执行的任务",new Date());
+            log.info("{}时间点之前不存在未执行的任务", new Date());
             return;
         }
         //将数据库中未执行的任务重新加入至schedule中
-        String name ;
+        String name;
         int type;
         JobDetail jobDetail;
         Trigger trigger = null;
@@ -54,19 +57,19 @@ public class QuartzService {
             name = job.getJobName();
             JobDataMap dataMap = new JobDataMap();
             dataMap.put("parameter", job.getParameter());
-            jobDetail = JobBuilder.newJob(MyJob.class).withIdentity(name,name).setJobData(dataMap).build();
+            jobDetail = JobBuilder.newJob(MyJob.class).withIdentity(name, name).setJobData(dataMap).build();
             switch (type) {
                 case 0:
                     //立即执行
                     trigger = TriggerBuilder.newTrigger()
-                            .withIdentity(name,name)
+                            .withIdentity(name, name)
                             .startNow()
                             .build();
                     break;
                 case 1:
                     //延时执行一次
                     trigger = TriggerBuilder.newTrigger()
-                            .withIdentity(name,name)
+                            .withIdentity(name, name)
                             .startAt(job.getExecuteDate())
                             .build();
                     break;
@@ -85,14 +88,14 @@ public class QuartzService {
                             .build();
                     break;
                 default:
-                    log.error("任务{}的状态出错",job);
+                    log.error("任务{}的状态出错", job);
                     right = false;
                     break;
             }
             if (right) {
                 try {
-                    scheduler.scheduleJob(jobDetail,trigger);
-                    log.info("job---{}加入至schedule",name);
+                    scheduler.scheduleJob(jobDetail, trigger);
+                    log.info("job---{}加入至schedule", name);
                 } catch (SchedulerException e) {
                     e.printStackTrace();
                 }
@@ -108,25 +111,25 @@ public class QuartzService {
      * @param parameter 传入任务的参数
      * @param startDate 执行的时间
      */
-    public void addJob(String parameter,Date startDate) {
+    public void addJob(String parameter, Date startDate) {
         //设置一个标识符
-        String id = UUID.randomUUID().toString();
+        String name = UUID.randomUUID().toString();
         //设置传入job的参数
         JobDataMap dataMap = new JobDataMap();
         dataMap.put("parameter", parameter);
         //jobDetail
         JobDetail jobDetail = JobBuilder.newJob(MyJob.class)
-                .withIdentity(id,id)
+                .withIdentity(JobKey.jobKey(name))
                 .setJobData(dataMap)
                 .build();
         //trigger
         Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(id,id)
+                .withIdentity(TriggerKey.triggerKey(name))
                 .startAt(startDate)
                 .build();
         //写入数据库
         PtpMsmTask job = PtpMsmTask.builder()
-                .jobName(id)
+                .jobName(name)
                 .parameter(parameter)
                 .executeDate(startDate)
                 .status(TaskStatusEnum.NOT_PERFORME.getType())
@@ -138,8 +141,8 @@ public class QuartzService {
             return;
         }
         try {
-            scheduler.scheduleJob(jobDetail,trigger);
-            log.info("job---{}加入至schedule",id);
+            scheduler.scheduleJob(jobDetail, trigger);
+            log.info("job---{}加入至schedule", name);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -152,17 +155,23 @@ public class QuartzService {
      */
     public void addJob(String parameter) {
         //设置一个标识符
-        String id = UUID.randomUUID().toString();
+        String name = UUID.randomUUID().toString();
         //设置传入job的参数
         JobDataMap dataMap = new JobDataMap();
         dataMap.put("parameter", parameter);
         //jobDetail
-        JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity(id,id).setJobData(dataMap).build();
+        JobDetail jobDetail = JobBuilder.newJob(MyJob.class)
+                .withIdentity(JobKey.jobKey(name))
+                .setJobData(dataMap)
+                .build();
         //trigger
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(id,id).startNow().build();
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity(TriggerKey.triggerKey(name))
+                .startNow()
+                .build();
         //写入数据库
         PtpMsmTask job = PtpMsmTask.builder()
-                .jobName(id)
+                .jobName(name)
                 .parameter(parameter)
                 .executeDate(new Date())
                 .status(TaskStatusEnum.NOT_PERFORME.getType())
@@ -174,8 +183,8 @@ public class QuartzService {
             return;
         }
         try {
-            scheduler.scheduleJob(jobDetail,trigger);
-            log.info("job---{}加入至schedule",id);
+            scheduler.scheduleJob(jobDetail, trigger);
+            log.info("job---{}加入至schedule", name);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -185,21 +194,28 @@ public class QuartzService {
      * 根据cron表达式执行任务
      *
      * @param parameter 短信参数
-     * @param cron cron表达式
+     * @param cron      cron表达式
      */
     public void addJob(String parameter, String cron) {
         //设置一个标识符
-        String id = UUID.randomUUID().toString();
+        String name = UUID.randomUUID().toString();
         //设置传入job的参数
         JobDataMap dataMap = new JobDataMap();
         dataMap.put("parameter", parameter);
         //jobDetail
-        JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity(id,id).setJobData(dataMap).build();
+        JobDetail jobDetail = JobBuilder.newJob(MyJob.class)
+                .withIdentity(JobKey.jobKey(name))
+                .setJobData(dataMap)
+                .build();
         //trigger
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(id,id).startNow().withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity(TriggerKey.triggerKey(name))
+                .startNow()
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                .build();
         //写入数据库
         PtpMsmTask job = PtpMsmTask.builder()
-                .jobName(id)
+                .jobName(name)
                 .parameter(parameter)
                 .executeDate(new Date())
                 .cron(cron)
@@ -212,8 +228,8 @@ public class QuartzService {
             return;
         }
         try {
-            scheduler.scheduleJob(jobDetail,trigger);
-            log.info("job---{}加入至schedule",id);
+            scheduler.scheduleJob(jobDetail, trigger);
+            log.info("job---{}加入至schedule", name);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }

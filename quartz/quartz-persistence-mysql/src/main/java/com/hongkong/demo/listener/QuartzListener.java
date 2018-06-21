@@ -1,12 +1,10 @@
 package com.hongkong.demo.listener;
 
-import com.hongkong.demo.enumeration.TaskStatusEnum;
 import com.hongkong.demo.data.model.PtpMsmTask;
 import com.hongkong.demo.data.repository.PtpMsmTaskRepository;
+import com.hongkong.demo.enumeration.TaskStatusEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobListener;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +21,9 @@ public class QuartzListener implements JobListener {
     @Autowired
     private PtpMsmTaskRepository repository;
 
+    @Autowired
+    private Scheduler scheduler;
+
     @Override
     public String getName() {
         return "QuartzListener";
@@ -30,7 +31,11 @@ public class QuartzListener implements JobListener {
 
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
-        //监听job执行之前
+        /*
+        监听job执行之前
+        TODO: 2018/6/7
+        */
+//        scheduler.deleteJob(new JobKey())
 
     }
 
