@@ -1,4 +1,4 @@
-package chapter_one;
+package chapter_1;
 
 public class DeadLock {
     private static final String A = "A";

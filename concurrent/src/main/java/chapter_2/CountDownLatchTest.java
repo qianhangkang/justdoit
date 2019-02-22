@@ -1,4 +1,4 @@
-package chapter_two;
+package chapter_2;
 
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
